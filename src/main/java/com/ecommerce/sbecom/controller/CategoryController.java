@@ -25,8 +25,8 @@ public class CategoryController {
         return new  ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @PostMapping("/public/category")
-    // @RequestMapping(value = "/public/category", method = RequestMethod.POST)
+    @PostMapping("/public/categories")
+    // @RequestMapping(value = "/public/categories", method = RequestMethod.POST)
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category added successfully", HttpStatus.CREATED);
@@ -45,8 +45,8 @@ public class CategoryController {
          }
     }
 
-    // @PutMapping("/public/category/{categoryId}")
-    @RequestMapping(value = "/public/category/{categoryId}", method = RequestMethod.PUT)
+    // @PutMapping("/public/categories/{categoryId}")
+    @RequestMapping(value = "/public/categories/{categoryId}", method = RequestMethod.PUT)
     public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId) {
         categoryService.updateCategory(category, categoryId);
         return new ResponseEntity<>("Category updated successfully", HttpStatus.OK);
