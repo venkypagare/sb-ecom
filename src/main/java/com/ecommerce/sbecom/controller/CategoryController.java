@@ -1,12 +1,12 @@
 package com.ecommerce.sbecom.controller;
 
 import com.ecommerce.sbecom.model.Category;
+import com.ecommerce.sbecom.payload.CategoryResponseDTO;
 import com.ecommerce.sbecom.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -20,9 +20,9 @@ public class CategoryController {
 
     // @GetMapping("/public/categories")
     @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategories();
-        return new  ResponseEntity<>(categories, HttpStatus.OK);
+    public ResponseEntity<CategoryResponseDTO> getAllCategories() {
+        CategoryResponseDTO categoryResponseDTO = categoryService.getAllCategories();
+        return new  ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("/public/categories")
