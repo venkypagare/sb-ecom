@@ -25,6 +25,11 @@ public class CategoryController {
         return new  ResponseEntity<>(categoryResponseDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/echo")
+    public ResponseEntity<String> echoMessage(@RequestParam(name = "message", required = false) String message) {
+        return new ResponseEntity<>("Echoed Message: "+ message, HttpStatus.OK);
+    }
+
     @PostMapping("/public/categories")
     // @RequestMapping(value = "/public/categories", method = RequestMethod.POST)
     public ResponseEntity<CategoryRequestDTO> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO){
