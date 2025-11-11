@@ -8,6 +8,10 @@ import com.ecommerce.sbecom.payload.CategoryResponseDTO;
 import com.ecommerce.sbecom.repositories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -20,15 +24,39 @@ public class CategoryServiceImpl implements CategoryService {
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponseDTO getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        if(categories.isEmpty()) {
+    public CategoryResponseDTO getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+
+        // Case 1: No data at all in DB
+        if (categoryPage.getTotalElements() == 0) {
             throw new APIException("No categories created till now.");
+        }
+
+        // Case 2: Page number out of range
+        if (pageNumber >= categoryPage.getTotalPages()) {
+            throw new APIException("Requested page number is out of range. Total pages available: "
+                    + categoryPage.getTotalPages());
+        }
+
+        // Case 3: Empty content for current page (rare but safe)
+        List<Category> categories = categoryPage.getContent();
+        if (categories.isEmpty()) {
+            throw new APIException("No categories found for the requested page number.");
         }
         List<CategoryRequestDTO> categoriesDTO = categories.stream()
                 .map(category -> modelMapper.map(category, CategoryRequestDTO.class)).toList();
         CategoryResponseDTO categoryResponseDTO = new CategoryResponseDTO();
         categoryResponseDTO.setCategoryResponse(categoriesDTO);
+        categoryResponseDTO.setPageNumber(categoryPage.getNumber());
+        categoryResponseDTO.setPageSize(categoryPage.getSize());
+        categoryResponseDTO.setTotalElements(categoryPage.getTotalElements());
+        categoryResponseDTO.setTotalPages(categoryPage.getTotalPages());
+        categoryResponseDTO.setLastPage(categoryPage.isLast());
         return categoryResponseDTO;
     }
 
