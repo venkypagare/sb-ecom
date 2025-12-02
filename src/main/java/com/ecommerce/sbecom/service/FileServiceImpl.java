@@ -17,7 +17,7 @@ public class FileServiceImpl implements FileService {
         // File names of current / original file
         String originalFileName = file.getOriginalFilename();
 
-        // Generate a unique file name
+        // Generate a unique file name to avoid file overriding if having similar name
         String randomUUID = UUID.randomUUID().toString();
         // if fileName is mat.jpg and random UUID 1234 -> new fileName 1234.jpg
         assert originalFileName != null;
