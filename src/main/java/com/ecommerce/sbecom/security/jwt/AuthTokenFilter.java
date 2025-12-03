@@ -56,7 +56,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String jwt = jwtUtils.getJwtFromHeader(request);
+//        String jwt = jwtUtils.getJwtFromHeader(request);
+        String jwt = jwtUtils.getJwtFromCookies(request);
         logger.debug("AuthTokenFilter.java: {}", jwt);
         return jwt;
     }
@@ -80,3 +81,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 // datasource, and we might want to customize this, we might want to adapt retrieving user details functionality specific
 // to our domain in our future, we might want to implement different query or custom error handling so for all of this
 // reason we will be making use of this interface and customize things further.
+
+// Cookie Based Authentication: Bearer tokens need to be added explicitly to the HTTP request. Browser will automatically send cookies. User tries to
+// login, token is generated, token is issued to user as a cookie, JWT cookie sent in API requests, token validated,
+// request authorized if valid, else error.
